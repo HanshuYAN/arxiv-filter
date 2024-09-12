@@ -12,12 +12,13 @@ import torch
 VALID_FIELD_ABBR = ['cs.LG', 'cs.CV']
 
 def _download_new_papers(field_abbr):
+    # reference: https://github.com/AutoLLM/ArxivDigest/blob/main/src/download_new_papers.py
     assert field_abbr in VALID_FIELD_ABBR
-    NEW_SUB_URL = f'https://arxiv.org/list/{field_abbr}/new'  # https://arxiv.org/list/cs/new
+    NEW_SUB_URL = f'https://arxiv.org/list/{field_abbr}/new'
     page = urllib.request.urlopen(NEW_SUB_URL)
     soup = bs(page, features="html.parser")
     content = soup.body.find("div", {'id': 'content'})
-    h3 = content.find_all("h3")[0].text   # find the first h3 element in content; e.g: New submissions for Wed, 10 May 23
+    h3 = content.find_all("h3")[0].text   # find the first h3 element in content; i.e., "New submissions for Wed, 10 May 23"
 
     dt_list = content.dl.find_all("dt")
     dd_list = content.dl.find_all("dd")
@@ -116,7 +117,6 @@ for paper in tqdm.tqdm(papers, desc='Filtering papers: '):
 
     print(">>>>>>>>>>>>>>>>>>>>>")
     print(paper_title)
-    # print(paper_abstract)
     print(outputs, reason)
     print("<<<<<<<<<<<<<<<<<<<<<")
 
