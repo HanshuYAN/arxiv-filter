@@ -1,2 +1,2 @@
 # arxiv-filter
-Get arXiv papers of your interests
+Get daily new arXiv papers and use Llama to filter out those of interest.
