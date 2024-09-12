@@ -30,18 +30,20 @@ def _download_new_papers(field_abbr):
         paper_number = dt_list[i].text.strip().split("arXiv:")[-1].split("\n")[0]
         paper['main_page'] = arxiv_base + paper_number
         paper['title'] = dd_list[i].find("div", {"class": "list-title mathjax"}).text.replace("Title:", "").replace("\n", "").strip()
-        paper['authors'] = dd_list[i].find("div", {"class": "list-authors"}).text.replace("Authors:", "").replace("\n", "").strip()
         paper['abstract'] = dd_list[i].find("p", {"class": "mathjax"}).text.replace("\n", "").strip()
+        paper['authors'] = dd_list[i].find("div", {"class": "list-authors"}).text.replace("Authors:", "").replace("\n", "").strip()
+        paper['subjects'] = dd_list[i].find("div", {"class": "list-subjects"}).text.replace("Subjects:", "").replace("\n", "").strip()
         new_paper_list.append(paper)
     return new_paper_list
 
 
 ######>================ Get paper ================>######
-# field_abbr='cs.LG'
-field_abbr='cs.CV'
-papers = _download_new_papers(field_abbr)
+field_abbr_list = ['cs.CV', 'cs.LG']
+papers = []
+for field_abbr in field_abbr_list:
+    papers.extend(_download_new_papers(field_abbr))  
 today = datetime.date.fromtimestamp(datetime.datetime.now(tz=pytz.timezone("America/New_York")).timestamp()).strftime("%Y-%m-%d")
-fname = f"./data/{field_abbr.replace("." ,"-")}_{today}.xlsx" # e.g., cs-LG_2024-09-06.jsonl
+fname = f"./data/{today}.xlsx" # e.g., cs-LG_2024-09-06.jsonl
 
 
 #####>================ Llama-3.1 ================>######
