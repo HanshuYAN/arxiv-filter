@@ -50,8 +50,11 @@ _EXPANSIONS = {
             "vision language models",
             "visual language model",
             "visual language models",
-            "language and vision",
             "vision and language",
+            "language and vision model",
+            "language and vision models",
+            "language and vision assistant",
+            "language and vision learning",
             "vlm",
             "vlms",
             "mllm",
@@ -65,7 +68,7 @@ _EXPANSIONS = {
             "text image alignment",
         ],
         "weak": [
-            ("multimodal", ["vision", "visual", "image", "language"]),
+            ("multimodal", ["language", "text", "caption", "vlm", "vlms"]),
             ("image captioning", []),
         ],
         "negative_weak": ["audio visual"],
@@ -233,7 +236,24 @@ _EXPANSIONS = {
 
 _TOPIC_EXTRAS = {
     "post-training": {
-        "strong": ["post training"],
+        # Bare "post-training" also means quantization. Count it only next to
+        # an alignment cue, and drop the hit when it is post-training quantization.
+        "strong_context": [
+            (
+                "post training",
+                [
+                    "language model",
+                    "language models",
+                    "llm",
+                    "llms",
+                    "alignment",
+                    "preference",
+                    "human feedback",
+                    "instruction tuning",
+                ],
+            ),
+        ],
+        "negative_overlap": ["post training quantization"],
     },
 }
 
@@ -354,6 +374,17 @@ def compile_topics(interests=None):
         extra = _TOPIC_EXTRAS.get(topic_name, {})
         for phrase in extra.get("strong", []):
             _add_phrase(topic.patterns, phrase, STRONG_WEIGHT, "strong", topic_name)
+        for item in extra.get("strong_context", []):
+            phrase, context = item
+            _add_phrase(topic.patterns, phrase, STRONG_WEIGHT, "strong", topic_name, context)
+        for phrase in extra.get("negative_overlap", []):
+            normalized = normalize(phrase)
+            if normalized:
+                topic.negative_overlap.append((normalized, _phrase_regex(normalized)))
+        for phrase in extra.get("negative_weak", []):
+            normalized = normalize(phrase)
+            if normalized:
+                topic.negative_weak.append((normalized, _phrase_regex(normalized)))
         topics.append(topic)
     return topics
 

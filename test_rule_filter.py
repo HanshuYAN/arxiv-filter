@@ -109,6 +109,36 @@ class LexiconTest(unittest.TestCase):
             topic="multimodal learning",
         )
 
+    def test_language_and_vision_tasks_are_not_a_vision_language_model(self):
+        self.assert_not(
+            "SGFormer: Single-Layer Graph Transformers",
+            "These models inherit transformers in language and vision tasks.",
+        )
+
+    def test_language_and_vision_assistant_is_yes(self):
+        self.assert_yes(
+            "SLaVA-CXR: Small Language and Vision Assistant for Chest X-ray Report Automation",
+            topic="multimodal learning",
+        )
+
+    def test_post_training_quantization_is_not_alignment(self):
+        self.assert_not(
+            "Quantizing Large-Scale Models",
+            "We survey post-training quantization of large language models.",
+        )
+
+    def test_post_training_alignment_is_yes(self):
+        self.assert_yes(
+            "Post-training alignment of large language models",
+            topic="post-training",
+        )
+
+    def test_multimodal_without_language_is_not(self):
+        self.assert_not(
+            "Multimodal Object Detection in Remote Sensing",
+            "A multimodal backbone detects objects in aerial images.",
+        )
+
     def test_robot_context_blocks_a_weak_language_model_match(self):
         # The same weak hits are YES without the robot guard (see the LLM RL test).
         # Blocking the abstract hit drops the score from 3 to 2.
