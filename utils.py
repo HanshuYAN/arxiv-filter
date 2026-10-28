@@ -7,8 +7,6 @@ import re
 import datetime
 import pytz
 import tqdm
-import transformers
-import torch
 
 def check_date_and_get_fname(date):
     ###->>> The date should be [new, recent, or, yyyy-mm]
